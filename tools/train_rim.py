@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def setup_train(run_name, training_root, validation_root, base_directory,
-                cfg_filename, checkpoint, device, num_workers, resume, machine_rank, debug):
+                cfg_filename, checkpoint, device, num_workers, resume, machine_rank, debug, sensitivity_maps):
 
     cfg, experiment_directory, forward_operator, backward_operator, engine = \
         setup_environment(run_name, base_directory, cfg_filename, device, machine_rank, debug=debug)
@@ -40,7 +40,7 @@ def setup_train(run_name, training_root, validation_root, base_directory,
 
     # Training data
     training_data = build_dataset(
-        cfg.training.dataset.name, training_root, sensitivity_maps=None, transforms=train_transforms)
+        cfg.training.dataset.name, training_root, sensitivity_maps=sensitivity_maps, transforms=train_transforms)
     logger.info(f'Training data size: {len(training_data)}.')
     logger.debug(f'Training dataset:\n{training_data}')
 

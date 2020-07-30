@@ -29,10 +29,12 @@ class FastMRIDataset(H5SliceData):
 
     def __getitem__(self, idx: int) -> Dict[str, Any]:
         sample = super().__getitem__(idx)
+        # print(sample['kspace'].shape)
 
         if self.transform:
             sample = self.transform(sample)
-
+            # print(self.transform)
+            # print(sample['masked_kspace'].shape)
         return sample
 
 
@@ -79,7 +81,7 @@ class CalgaryCampinasDataset(H5SliceData):
         return sample
 
 
-def build_dataset(dataset_name, root: pathlib.Path, sensitivity_maps=None, transforms=None):
+def build_dataset(dataset_name, root: pathlib.Path, sensitivity_maps: pathlib.Path, transforms=None):
     logger.info(f'Building dataset for {dataset_name}.')
     dataset_class: Callable = str_to_class('direct.data.datasets', dataset_name + 'Dataset')
     logger.debug(f'Dataset class: {dataset_class}.')
