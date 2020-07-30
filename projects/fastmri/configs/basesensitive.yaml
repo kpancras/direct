@@ -10,7 +10,7 @@ training:
                 name: FastMRI
                 accelerations: [4]
                 center_fractions: [0.08]
-    batch_size: 4
+    batch_size: 1
     optimizer: Adam
     lr: 0.005
     weight_decay: 0.0
