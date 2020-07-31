@@ -110,7 +110,7 @@ class H5SliceData(DirectClass, Dataset):
         # If the sensitivity maps exist, load these
         if self.sensitivity_maps:
             with h5py.File(self.sensitivity_maps / filename.name, 'r') as sens:
-                # TODO(kp) fix way sense maps are stored, current loading not generalized
+                # TODO(kp) fix way sense maps are stored, current loading not generalized(test)
                 sensitivity_map = sens['sense'][slice_no, ..., 0]+1j*sens['sense'][slice_no, ..., 1]
 
 
