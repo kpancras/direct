@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def setup_train(run_name, training_root, validation_root, base_directory,
-                cfg_filename, checkpoint, device, num_workers, resume, machine_rank, debug, training_sm, validation_sm):
+                cfg_filename, checkpoint, device, num_workers, resume, machine_rank, debug):
 
     cfg, experiment_directory, forward_operator, backward_operator, engine = \
         setup_environment(run_name, base_directory, cfg_filename, device, machine_rank, debug=debug)
@@ -40,7 +40,7 @@ def setup_train(run_name, training_root, validation_root, base_directory,
 
     # Training data
     training_data = build_dataset(
-        cfg.training.dataset.name, training_root, sensitivity_maps=training_sm, transforms=train_transforms)
+        cfg.training.dataset.name, training_root, sensitivity_maps=None, transforms=train_transforms)
     logger.info(f'Training data size: {len(training_data)}.')
     logger.debug(f'Training dataset:\n{training_data}')
 
@@ -58,7 +58,7 @@ def setup_train(run_name, training_root, validation_root, base_directory,
                 estimate_sensitivity_maps=dataset_config.transforms.estimate_sensitivity_maps,
             )
             curr_validation_data = build_dataset(
-                dataset_config.name, validation_root, sensitivity_maps=validation_sm, transforms=val_transforms)
+                dataset_config.name, validation_root, sensitivity_maps=None, transforms=val_transforms)
             logger.info(
                 f'Validation data size for dataset'
                 f' {dataset_config.name} ({idx + 1}/{len(cfg.validation.datasets)}): {len(curr_validation_data)}.')
@@ -109,8 +109,6 @@ if __name__ == '__main__':
                              'this flag is ignored.'
                         )
     parser.add_argument('--resume', help='Resume training if possible.', action='store_true')
-    parser.add_argument('--training-sm', type=pathlib.Path, help='Folder containing the training sensitivity maps.')
-    parser.add_argument('--validation-sm', type=pathlib.Path, help='Folder containing the validation sensitivity maps.')
 
     args = parser.parse_args()
 
@@ -125,5 +123,5 @@ if __name__ == '__main__':
            run_name, args.training_root, args.validation_root, args.experiment_directory,
            args.cfg_file, args.initialization_checkpoint,
            args.device, args.num_workers, args.resume,
-           args.machine_rank, args.debug,args.training_sm,args.validation_sm)
+           args.machine_rank, args.debug)
 

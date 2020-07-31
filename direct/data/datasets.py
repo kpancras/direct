@@ -17,33 +17,22 @@ class FastMRIDataset(H5SliceData):
                  root: pathlib.Path,
                  transform: Optional[Callable] = None,
                  dataset_description: Optional[Dict[Any, Any]] = None,
-                 sensitivity_maps: Optional[pathlib.Path] = None,
                  pass_mask: bool = False, **kwargs) -> None:
         super().__init__(
             root=root, dataset_description=dataset_description,
-            metadata=None, sensitivity_maps = sensitivity_maps, extra_keys=None if not pass_mask else ('mask',), **kwargs)
-        # if self.sensitivity_maps is not None:
-        #     raise NotImplementedError(f'Sensitivity maps are not supported in the current '
-        #                               f'{self.__class__.__name__} class.')
+            metadata=None, extra_keys=None if not pass_mask else ('mask',), **kwargs)
+        if self.sensitivity_maps is not None:
+            raise NotImplementedError(f'Sensitivity maps are not supported in the current '
+                                      f'{self.__class__.__name__} class.')
 
         self.transform = transform
-        print(type(self.transform),'wow')
+
     def __getitem__(self, idx: int) -> Dict[str, Any]:
         sample = super().__getitem__(idx)
-        # print(sample['kspace'].shape)
-        # print('before', sample['sensitivity_map'].max(), sample['sensitivity_map'].min())
-        # import matplotlib.pyplot as plt
-        # import colorcet as cc
-        # sense = sample['sensitivity_map']
-        # csm = np.sum(sense[20], 0) if sense.ndim == 5 else np.sum(sense, 0)
-        # plt.imshow(np.abs(csm), cmap=cc.m_gray)
-        # plt.show()
+
         if self.transform:
             sample = self.transform(sample)
 
-            # print('after:', sample['sensitivity_map'].numpy().max(), sample['sensitivity_map'].numpy().min())
-            # print(self.transform)
-            # print(sample['masked_kspace'].shape)
         return sample
 
 
@@ -70,7 +59,6 @@ class CalgaryCampinasDataset(H5SliceData):
         sample = super().__getitem__(idx)
         kspace = sample['kspace']
 
-
         # TODO: use broadcasting function.
         if self.pass_mask:
             # # In case the data is already masked, the sampling mask can be recovered by finding the zeros.
@@ -91,7 +79,7 @@ class CalgaryCampinasDataset(H5SliceData):
         return sample
 
 
-def build_dataset(dataset_name, root: pathlib.Path, sensitivity_maps: Optional[pathlib.Path] = None, transforms=None):
+def build_dataset(dataset_name, root: pathlib.Path, sensitivity_maps=None, transforms=None):
     logger.info(f'Building dataset for {dataset_name}.')
     dataset_class: Callable = str_to_class('direct.data.datasets', dataset_name + 'Dataset')
     logger.debug(f'Dataset class: {dataset_class}.')
