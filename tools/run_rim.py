@@ -104,6 +104,7 @@ if __name__ == '__main__':
                              'have the same length as accelerations.')
     parser.add_argument('--checkpoint', type=int, help='Number of an existing checkpoint.')
 
+
     args = parser.parse_args()
 
     random.seed(args.seed)

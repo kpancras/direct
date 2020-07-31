@@ -261,11 +261,15 @@ class EstimateCoilSensitivity(DirectClass):
             torch.tensor([0.], dtype=rss_image.dtype).to(rss_image.device),
             (image / rss_image).rename(None)).refine_names(*image.names)
         return sensitivity_mask
-
+    #Todo(kp) What happens here? Does this break everything?
     def __call__(self, sample):
         if self.type_of_map == 'unit':
             kspace = sample['kspace']
-            sensitivity_map = torch.zeros(kspace.shape).float()
+            #Todo(kp) does this make things better?
+            if 'sensitivity_map' in sample:
+                sensitivity_map = sample['sensitivity_map']
+            else:
+                sensitivity_map = torch.zeros(kspace.shape).float()
             # TODO(jt): Named variant, this assumes the complex channel is last.
             if not kspace.names[-1] == 'complex':
                 raise NotImplementedError(f'Assuming last channel is complex.')
@@ -421,7 +425,6 @@ def build_mri_transforms(
     if mask_func:
         mri_transforms.append(
             CreateSamplingMask(mask_func, shape=crop, use_seed=True, return_acs=estimate_sensitivity_maps)),
-
     mri_transforms += [
         EstimateCoilSensitivity(
             kspace_key='kspace', backward_operator=backward_operator,

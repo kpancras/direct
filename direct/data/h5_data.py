@@ -16,6 +16,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+
 class H5SliceData(DirectClass, Dataset):
     """
     A PyTorch Dataset class which outputs k-space slices based on the h5 dataformat.
@@ -109,7 +110,10 @@ class H5SliceData(DirectClass, Dataset):
         # If the sensitivity maps exist, load these
         if self.sensitivity_maps:
             with h5py.File(self.sensitivity_maps / filename.name, 'r') as sens:
-                sensitivity_map = sens['sensitivity_map'][slice_no]
+                # TODO(kp) fix way sense maps are stored, current loading not generalized
+                sensitivity_map = sens['sense'][slice_no, ..., 0]+1j*sens['sense'][slice_no, ..., 1]
+
+
             sample['sensitivity_map'] = sensitivity_map
 
         if metadata is not None:
