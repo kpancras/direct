@@ -267,7 +267,7 @@ class EstimateCoilSensitivity(DirectClass):
             kspace = sample['kspace']
             #Todo(kp) does this make things better?
             if 'sensitivity_map' in sample:
-                sensitivity_map = sample['sensitivity_map']
+                return sample
             else:
                 sensitivity_map = torch.zeros(kspace.shape).float()
             # TODO(jt): Named variant, this assumes the complex channel is last.

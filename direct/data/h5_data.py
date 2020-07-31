@@ -111,8 +111,8 @@ class H5SliceData(DirectClass, Dataset):
         if self.sensitivity_maps:
             with h5py.File(self.sensitivity_maps / filename.name, 'r') as sens:
                 # TODO(kp) fix way sense maps are stored, current loading not generalized(test)
-                sensitivity_map = sens['sense'][slice_no, ..., 0]+1j*sens['sense'][slice_no, ..., 1]
-
+                sensitivity_map = sens['sense'][slice_no]
+                sensitivity_map = sensitivity_map[..., 0] + 1j*sensitivity_map[..., 1] #sense maps are saved with real and imag part stacked along last dim (this line needs to go)
 
             sample['sensitivity_map'] = sensitivity_map
 
