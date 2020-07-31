@@ -17,13 +17,14 @@ class FastMRIDataset(H5SliceData):
                  root: pathlib.Path,
                  transform: Optional[Callable] = None,
                  dataset_description: Optional[Dict[Any, Any]] = None,
+                 sensitivity_maps: Optional[pathlib.Path] = None,
                  pass_mask: bool = False, **kwargs) -> None:
         super().__init__(
             root=root, dataset_description=dataset_description,
-            metadata=None, extra_keys=None if not pass_mask else ('mask',), **kwargs)
-        if self.sensitivity_maps is not None:
-            raise NotImplementedError(f'Sensitivity maps are not supported in the current '
-                                      f'{self.__class__.__name__} class.')
+            metadata=None, sensitivity_maps = sensitivity_maps, extra_keys=None if not pass_mask else ('mask',), **kwargs)
+        # if self.sensitivity_maps is not None:
+        #     raise NotImplementedError(f'Sensitivity maps are not supported in the current '
+        #                               f'{self.__class__.__name__} class.')
 
         self.transform = transform
 
