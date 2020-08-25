@@ -96,6 +96,7 @@ class H5SliceData(DirectClass, Dataset):
 
         with h5py.File(filename, 'r') as data:
             kspace = data['kspace'][slice_no]
+            attrs = dict(data.attrs)
             if self.extra_keys:
                 for extra_key in self.extra_keys:
                     extra_data[extra_key] = data[extra_key][()]
@@ -106,6 +107,7 @@ class H5SliceData(DirectClass, Dataset):
         sample = {'kspace': kspace,
                   'filename': filename.name,
                   'slice_no': slice_no}
+        sample['attrs'] = attrs
 
         # If the sensitivity maps exist, load these
         if self.sensitivity_maps:

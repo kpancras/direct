@@ -4,6 +4,8 @@ import h5py
 import pathlib
 import numpy as np
 import argparse
+from direct.data.transforms import center_crop
+
 
 from tqdm import tqdm
 
@@ -22,12 +24,18 @@ def extract_mask(filename):
     """
     with h5py.File(filename, 'r') as f:
         kspace = f['kspace']
+        crop = (320,320)
+        # kspace = center_crop(kspace,(320,320))
+        print(kspace.shape)
+        # import matplotlib.pyplot as plt
+        # plt.imshow(np.abs(np.sum(np.sqrt(np.fft.ifft2(kspace[10],axes=(-2,-1))^2))))
+        # plt.show
         size = kspace.shape[0]
         out = np.abs(kspace[0])
         for idx in range(1, size):
-            out += np.abs(kspace[idx])
+            out += np.abs(kspace[idx)
 
-    sampling_mask = ~(np.abs(out).sum(axis=-1) == 0)
+    sampling_mask = ~(np.abs(out).sum(axis=0) == 0)
 
     return sampling_mask
 

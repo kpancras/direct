@@ -469,6 +469,30 @@ def root_sum_of_squares(data: torch.Tensor, dim: Union[int, str] = 'coil') -> to
     else:
         return torch.sqrt((data ** 2).sum(dim))
 
+def center_crop_mask(data: torch.Tensor, shape: Tuple[int, int]) -> torch.Tensor:
+    """
+    Apply a center crop along the last two dimensions -1.
+
+    Parameters
+    ----------
+    data : torch.Tensor
+    shape : Tuple[int, int]
+        The output shape, should be smaller than the corresponding data dimensions.
+
+    Returns
+    -------
+    torch.Tensor : The center cropped data.
+    """
+    # TODO(kp): change header to reflect change for the crop, wrt center_crop. This one is specifically for the mask in predict_test_fastmri
+    # TODO: Make dimension independent.
+    if not (0 < shape[0] <= data.shape[-3]) or not (0 < shape[1] <= data.shape[-2]):
+        raise ValueError(f'Crop shape should be smaller than image.')
+
+    width_lower = (data.shape[-3] - shape[0]) // 2
+    width_upper = width_lower + shape[0]
+    height_lower = (data.shape[-2] - shape[1]) // 2
+    height_upper = height_lower + shape[1]
+    return data[..., width_lower:width_upper, height_lower:height_upper,:]
 
 def center_crop(data: torch.Tensor, shape: Tuple[int, int]) -> torch.Tensor:
     """
