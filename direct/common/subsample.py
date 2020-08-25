@@ -292,6 +292,14 @@ class FastMRIEquispacedMaskFunc(BaseMaskFunc):
 
         return torch.from_numpy(mask)
 
+    @staticmethod
+    def circular_centered_mask(shape, radius):
+        center = np.asarray(shape) // 2
+        Y, X = np.ogrid[:shape[0], :shape[1]]
+        dist_from_center = np.sqrt((X - center[1]) ** 2 + (Y - center[0]) ** 2)
+        mask = ((dist_from_center <= radius) * np.ones(shape)).astype(bool)
+        return mask[np.newaxis, ..., np.newaxis]
+
 
 class CalgaryCampinasMaskFunc(BaseMaskFunc):
     # TODO: Configuration improvements, so no **kwargs needed.
