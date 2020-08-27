@@ -5,6 +5,7 @@ import pathlib
 import numpy as np
 import argparse
 
+
 from tqdm import tqdm
 
 
@@ -25,9 +26,9 @@ def extract_mask(filename):
         size = kspace.shape[0]
         out = np.abs(kspace[0])
         for idx in range(1, size):
-            out += np.abs(kspace[idx])
+            out += np.abs(kspace[idx)
 
-    sampling_mask = ~(np.abs(out).sum(axis=-1) == 0)
+    sampling_mask = ~(np.abs(out).sum(axis=0) == 0)
 
     return sampling_mask
 
