@@ -314,6 +314,10 @@ class EstimateSensitivityMap(DirectClass):
     def __call__(self, sample):
         if self.type_of_map == "unit":
             kspace = sample["kspace"]
+            #TODO(kp) Figure out a way to skip this class entirely if sensitivity map already in sample and est = false
+            #(kp) added if statement to keep sensitivity map from being altered if already existing
+            if 'sensitivity_map' in sample:
+                return sample
             sensitivity_map = torch.zeros(kspace.shape).float()
             # TODO(jt): Named variant, this assumes the complex channel is last.
             if not kspace.names[-1] == "complex":

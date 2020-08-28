@@ -120,6 +120,9 @@ def setup_train(
     machine_rank,
     mixed_precision,
     debug,
+    #(kp) added sensitiviy maps to setup train
+    training_map,
+    validation_map,
 ):
 
     env = setup_training_environment(
@@ -163,6 +166,7 @@ def setup_train(
         initial_kspaces=None if initial_kspace is None else initial_kspace[0],
         pass_text_description=False,
         pass_dictionaries=pass_dictionaries,
+        sensitivity_maps=training_map,  # (kp) added loading of sens map to build dataset
     )
     training_data_sizes = [len(_) for _ in training_datasets]
     logger.info(
@@ -178,6 +182,7 @@ def setup_train(
             initial_images=None if initial_images is None else initial_images[1],
             initial_kspaces=None if initial_kspace is None else initial_kspace[1],
             pass_text_description=True,
+            sensitivity_maps = validation_map, #(kp) added loading of sens map to build dataset
         )
     else:
         logger.info(f"No validation data.")
@@ -304,6 +309,13 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument("--name", help="Run name.", required=False, type=str)
+    #(kp) added parser arguments
+    parser.add_argument(
+        '--training-map', type=pathlib.Path, help='Folder containing the training sensitivity maps.'
+    )
+    parser.add_argument(
+        '--validation-map', type=pathlib.Path, help='Folder containing the validation sensitivity maps.'
+    )
 
     args = parser.parse_args()
 
@@ -347,4 +359,7 @@ if __name__ == "__main__":
         args.machine_rank,
         args.mixed_precision,
         args.debug,
+        #(kp) Added arguments to be loaded
+        args.training_map,
+        args.validation_map,
     )

@@ -36,6 +36,8 @@ class FastMRIDataset(H5SliceData):
         transform: Optional[Callable] = None,
         filenames_filter: Optional[List[PathOrString]] = None,
         regex_filter: Optional[str] = None,
+        dataset_description: Optional[Dict[Any, Any]] = None,
+        sensitivity_maps: Optional[pathlib.Path] = None, #(kp) Added sensitivity map to init
         pass_mask: bool = False,
         pass_max: bool = True,
         initial_images: Optional[List[pathlib.Path]] = None,
@@ -61,12 +63,15 @@ class FastMRIDataset(H5SliceData):
             text_description=kwargs.get("text_description", None),
             pass_h5s=pass_h5s,
             pass_dictionaries=kwargs.get("pass_dictionaries", None),
+            sensitivity_maps = sensitivity_maps, #(kp) added to loader
+            **kwargs,
         )
-        if self.sensitivity_maps is not None:
-            raise NotImplementedError(
-                f"Sensitivity maps are not supported in the current "
-                f"{self.__class__.__name__} class."
-            )
+        #Commented implementation error
+        # if self.sensitivity_maps is not None:
+        #     raise NotImplementedError(
+        #         f"Sensitivity maps are not supported in the current "
+        #         f"{self.__class__.__name__} class."
+        #     )
 
         # TODO: Make exclusive or to give error when one of the two keys is not set.
         # TODO: Convert into mixin, and add support to main image

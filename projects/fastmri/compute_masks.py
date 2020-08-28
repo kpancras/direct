@@ -26,9 +26,9 @@ def extract_mask(filename):
         size = kspace.shape[0]
         out = np.abs(kspace[0])
         for idx in range(1, size):
-            out += np.abs(kspace[idx)
+            out += np.abs(kspace[idx])
 
-    sampling_mask = ~(np.abs(out).sum(axis=0) == 0)
+    sampling_mask = ~(np.abs(out).sum(axis=0) == 0) #(kp) changed the axis to 0, from -1
 
     return sampling_mask
 

@@ -60,7 +60,7 @@ def setup_inference(run_name, data_root, base_directory, output_directory,
         forward_operator=forward_operator,
         backward_operator=backward_operator,
         mask_func=None,
-        crop=(320,320),  # No cropping needed for testing
+        crop=(320,320),  #(kp) Cropping needed for fastmri testing
         image_center_crop=True,
         estimate_sensitivity_maps=cfg.training.dataset.transforms.estimate_sensitivity_maps,
     )
